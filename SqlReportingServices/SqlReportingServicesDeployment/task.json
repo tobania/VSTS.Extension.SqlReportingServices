@@ -1,0 +1,209 @@
+{
+  "id": "e99e48ac-8011-45ca-aa36-fc2cec54ecfb",
+  "name": "SqlReportingServicesDeployment",
+  "friendlyName": "SQL Server Reports Deployment",
+  "description": "Deploys the SQL reporting files to the SQL Reporting Service",
+  "author": "Tobania",
+  "helpMarkDown": "Deploys the SQL reporting files to the SQL Reporting Service",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "2",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Deploy SQL Server reporting files",
+  "groups": [
+    {
+      "name": "files",
+      "displayName": "Reporting Services source files",
+      "isExpanded": true
+    },
+    {
+      "name": "webservice",
+      "displayName": "Reporting Services Web Service",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ReportFiles",
+      "type": "filePath",
+      "label": "Report files: ",
+      "required": true,
+      "helpMarkDown": "The path to the rdl file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rdl",
+      "groupName": "files"
+    },
+
+    {
+      "name": "ReportUploadRootPath",
+      "type": "string",
+      "label": "Upload path",
+      "required": true,
+      "helpMarkDown": "The Upload (root) path to upload the RDL files to",
+      "groupName": "files"
+    },
+    {
+      "name": "IncludeDataSource",
+      "type": "boolean",
+      "label": "Include Data Source",
+      "helpMarkDown": "Upload datasources",
+      "groupName": "files",
+      "defaultValue": false
+    },
+    {
+      "name": "DataSourceLocalPath",
+      "type": "filePath",
+      "label": "Local Datasource path",
+      "helpMarkDown": "\"The path to the rds file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rds,",
+      "defaultValue": "",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeDataSource = true"
+    },
+    {
+      "name": "DataSourceRootPath",
+      "type": "string",
+      "label": "Remote Datasource path",
+      "helpMarkDown": "The path on SSRS to the datasource",
+      "defaultValue": "",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeDataSource = true"
+    },
+    {
+      "name": "ConnectionString",
+      "type": "string",
+      "label": "Connectionstring",
+      "helpMarkDown": "The connectionstring to update the datasource with. If you leave it empty, it will use the connectionstring in the RDS file.",
+      "defaultValue": "",
+      "groupName": "files",
+      "visibleRule": "IncludeDataSource = true"
+    },
+    {
+      "name": "IncludeDataSet",
+      "type": "boolean",
+      "label": "Include Data set",
+      "helpMarkDown": "Upload Datasets",
+      "groupName": "files",
+      "defaultValue": false
+    },
+    {
+      "name": "DataSetLocalPath",
+      "type": "filePath",
+      "label": "Local Datasource path",
+      "helpMarkDown": "\"The path to the rsd file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rsd,",
+      "defaultValue": "",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeDataSet = true"
+    },
+    {
+      "name": "DataSetRootPath",
+      "type": "string",
+      "label": "Remote Dataset path",
+      "helpMarkDown": "The path on SSRS to the dataset",
+      "defaultValue": "",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeDataSet = true"
+    },
+    {
+      "name": "IncludeResources",
+      "type": "boolean",
+      "label": "Include Resource files",
+      "helpMarkDown": "Upload additional resource files",
+      "groupName": "files",
+      "defaultValue": false
+    },
+    {
+      "name": "ResourceRootLocalPath",
+      "type": "filePath",
+      "label": "Local resource root path",
+      "helpMarkDown": "The root path containing the resource files to upload",
+      "defaultValue": "",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeResources = true"
+    },
+    {
+      "name": "ResourcePatterns",
+      "type": "multiLine",
+      "label": "Content",
+      "helpMarkDown": "The file patterns to the resources to upload. Each Newline is a new pattern. (Example:*.txt)",
+      "defaultValue": "**",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeResources = true"
+    },
+    {
+      "name": "ResourceRootPath",
+      "type": "string",
+      "label": "Remote resource path",
+      "helpMarkDown": "The path on SSRS to the resource",
+      "defaultValue": "",
+      "groupName": "files",
+      "required": true,
+      "visibleRule": "IncludeResources = true"
+    },
+    {
+      "name": "WebserviceUrl",
+      "type": "string",
+      "label": "Webservice URL",
+      "required": true,
+      "helpMarkDown": "The URL to the SQL server reporting Webservice. (Example: http(s)://[ServernameFQDN]/ReportServer/ReportService2010.asmx?wsdl)",
+      "groupName": "webservice"
+    },
+    {
+      "name": "WsUsername",
+      "type": "string",
+      "label": "Username",
+      "required": true,
+      "helpMarkDown": "The username to connect with the Webservice",
+      "groupName": "webservice"
+    },
+    {
+      "name": "WsPassword",
+      "type": "string",
+      "label": "Password",
+      "required": true,
+      "helpMarkDown": "The password to connect with the webservice. Use a new build or environment variable with its lock enabled on the Variables tab to encrypt this value.",
+      "groupName": "webservice"
+    },
+    {
+      "name": "OverrideExisting",
+      "type": "boolean",
+      "label": "Override existing files",
+      "required": false,
+      "defaultValue": true,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable overriding of existing RDL files on the reporting server"
+    },
+    {
+      "name": "UseVerbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable verbose logging"
+    }
+
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\SqlReportingServicesDeployment.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

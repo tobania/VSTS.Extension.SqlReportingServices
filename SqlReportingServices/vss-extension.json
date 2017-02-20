@@ -1,0 +1,39 @@
+{
+  "manifestVersion": 1,
+  "id": "SqlReportingServices",
+  "name": "SQL Server Reporting Services Deployment",
+  "version": "1.2.1",
+  "publisher": "tobania",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Contains a task for deploying Report Files to SQL Server Reporting Services",
+  "categories": [
+    "Build and release"
+  ],
+  "icons": {
+    "default": "icon.png"
+  },
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "files": [
+    { "path": "SqlReportingServicesDeployment" }
+  ],
+  "contributions": [
+    {
+      "id": "SqlReportingServicesDeployment",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "SqlReportingServicesDeployment"
+      }
+    }
+  ]
+}
