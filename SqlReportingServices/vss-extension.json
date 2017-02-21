@@ -2,13 +2,27 @@
   "manifestVersion": 1,
   "id": "SqlReportingServices",
   "name": "SQL Server Reporting Services Deployment",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "publisher": "tobania",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
+  "links": {
+    "home": {
+      "uri": "https://www.tobania.be/"
+    },
+    "support": {
+      "uri": "https://github.com/tobania/VSTS.Extension.SqlReportingServices/issues"
+    },
+    "repository": {
+      "uri": "https://github.com/tobania/VSTS.Extension.SqlReportingServices"
+    },
+    "issues": {
+      "uri": "https://github.com/tobania/VSTS.Extension.SqlReportingServices/issues"
+    }
+  },
   "description": "Contains a task for deploying Report Files to SQL Server Reporting Services",
   "categories": [
     "Build and release"

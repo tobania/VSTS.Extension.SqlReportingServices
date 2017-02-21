@@ -9,11 +9,25 @@
   "visibility": [
     "Release"
   ],
+  "links": {
+    "home": {
+      "uri": "https://www.tobania.be/"
+    },
+    "support": {
+      "uri": "https://github.com/tobania/VSTS.Extension.EntityFrameworkMigrations/issues"
+    },
+    "repository": {
+      "uri": "https://github.com/tobania/VSTS.Extension.EntityFrameworkMigrations"
+    },
+    "issues": {
+      "uri": "https://github.com/tobania/VSTS.Extension.EntityFrameworkMigrations/issues"
+    }
+  },
   "demands": [],
   "version": {
     "Major": "1",
     "Minor": "2",
-    "Patch": "1"
+    "Patch": "2"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting files",
