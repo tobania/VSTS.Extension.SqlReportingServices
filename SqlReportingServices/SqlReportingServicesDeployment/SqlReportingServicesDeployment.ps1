@@ -63,13 +63,31 @@ param(
 	Verbose-WriteLine "ResourceRootPath: $ResourceRootPath";
 	
 	$hasWsPassword = "N/A";
-	if([System.String]::IsNullOrWhiteSpace($WsPassword) -eq $true){ #Check if the Webservice HAS a password and mark it with some stars
+	if([System.String]::IsNullOrWhiteSpace($WsPassword) -eq $false){ #Check if the Webservice HAS a password and mark it with some stars
 		$hasWsPassword = "********";
 	}
 	Verbose-WriteLine "Webservice: $WebserviceUrl";
 	Verbose-WriteLine "WsUsername: $WsUsername";
 	Verbose-WriteLine "WsPassword: $hasWsPassword";
+	#Correcting remote server path
+	if($ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
+		$ReportUploadRootPath = $ReportUploadRootPath.Substring(0,$ReportUploadRootPath.Length-1);
+	}
 
+	if($ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
+		Verbose-WriteLine "Correcting ReportUploadRootPath";
+		$ReportUploadRootPath = $ReportUploadRootPath.Substring(0,$ReportUploadRootPath.Length-1);
+	}
+	if($DataSetRootPath.LastIndexOf("/") -eq $DataSetRootPath.Length-1){
+		Verbose-WriteLine "Correcting DataSetRootPath";
+		$DataSetRootPath = $DataSetRootPath.Substring(0,$DataSetRootPath.Length-1);
+	}
+	if($ResourceRootPath.LastIndexOf("/") -eq $ResourceRootPath.Length-1){
+		Verbose-WriteLine "Correcting ResourceRootPath";
+		$ResourceRootPath = $ResourceRootPath.Substring(0,$ResourceRootPath.Length-1);
+	}
+
+	
 ##########################################################
 #                      Testing files                     #
 ##########################################################
