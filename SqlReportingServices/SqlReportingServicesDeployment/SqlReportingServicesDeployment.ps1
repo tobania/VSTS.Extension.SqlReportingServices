@@ -73,11 +73,6 @@ param(
 	if($ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
 		$ReportUploadRootPath = $ReportUploadRootPath.Substring(0,$ReportUploadRootPath.Length-1);
 	}
-
-	if($ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
-		Verbose-WriteLine "Correcting ReportUploadRootPath";
-		$ReportUploadRootPath = $ReportUploadRootPath.Substring(0,$ReportUploadRootPath.Length-1);
-	}
 	if($DataSetRootPath.LastIndexOf("/") -eq $DataSetRootPath.Length-1){
 		Verbose-WriteLine "Correcting DataSetRootPath";
 		$DataSetRootPath = $DataSetRootPath.Substring(0,$DataSetRootPath.Length-1);
