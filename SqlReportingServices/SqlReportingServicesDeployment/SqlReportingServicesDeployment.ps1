@@ -70,14 +70,14 @@ param(
 	Verbose-WriteLine "WsUsername: $WsUsername";
 	Verbose-WriteLine "WsPassword: $hasWsPassword";
 	#Correcting remote server path
-	if($ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
+	if([string]::IsNullOrWhiteSpace($ReportUploadRootPath) -and $ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
 		$ReportUploadRootPath = $ReportUploadRootPath.Substring(0,$ReportUploadRootPath.Length-1);
 	}
-	if($DataSetRootPath.LastIndexOf("/") -eq $DataSetRootPath.Length-1){
+	if([string]::IsNullOrWhiteSpace($DataSetRootPath) -and $DataSetRootPath.LastIndexOf("/") -eq $DataSetRootPath.Length-1){
 		Verbose-WriteLine "Correcting DataSetRootPath";
 		$DataSetRootPath = $DataSetRootPath.Substring(0,$DataSetRootPath.Length-1);
 	}
-	if($ResourceRootPath.LastIndexOf("/") -eq $ResourceRootPath.Length-1){
+	if([string]::IsNullOrWhiteSpace($ResourceRootPath) -and $ResourceRootPath.LastIndexOf("/") -eq $ResourceRootPath.Length-1){
 		Verbose-WriteLine "Correcting ResourceRootPath";
 		$ResourceRootPath = $ResourceRootPath.Substring(0,$ResourceRootPath.Length-1);
 	}
