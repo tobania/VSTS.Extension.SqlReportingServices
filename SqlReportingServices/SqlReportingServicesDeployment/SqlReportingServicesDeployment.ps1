@@ -73,7 +73,7 @@ param(
 	if([string]::IsNullOrWhiteSpace($ReportUploadRootPath) -and $ReportUploadRootPath.Length-1 -ne -1 -and $ReportUploadRootPath.LastIndexOf("/") -eq $ReportUploadRootPath.Length-1){
 		$ReportUploadRootPath = $ReportUploadRootPath.Substring(0,$ReportUploadRootPath.Length-1);
 	}
-	if([string]::IsNullOrWhiteSpace($DataSetRootPath) -and $ReportUploadRootPath.Length-1 -ne -1 -and $DataSetRootPath.LastIndexOf("/") -eq $DataSetRootPath.Length-1){
+	if([string]::IsNullOrWhiteSpace($DataSetRootPath) -and $DataSetRootPath.Length-1 -ne -1 -and $DataSetRootPath.LastIndexOf("/") -eq $DataSetRootPath.Length-1){
 		Verbose-WriteLine "Correcting DataSetRootPath";
 		$DataSetRootPath = $DataSetRootPath.Substring(0,$DataSetRootPath.Length-1);
 	}
