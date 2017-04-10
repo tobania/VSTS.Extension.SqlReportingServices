@@ -3,7 +3,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="DataSource1">
-      <DataSourceReference>/TestDeploySSRS/TestDeploySSRS</DataSourceReference>
+      <DataSourceReference>/my/path</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>552d0ac0-2216-4ac1-b776-0c3139a6641b</rd:DataSourceID>
     </DataSource>
