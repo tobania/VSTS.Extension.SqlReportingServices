@@ -92,7 +92,7 @@
       "defaultValue": "",
       "groupName": "files",
       "required": true,
-      "visibleRule": "IncludeDataSource == true  || $DataSourceRootPath == true"
+      "visibleRule": "IncludeDataSource = true  || DataSourceRootPath = true"
     },
     {
       "name": "UpdateDataSource",
