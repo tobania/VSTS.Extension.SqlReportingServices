@@ -280,6 +280,33 @@ param(
 			$null, #Additional properties to set
 			[ref]$warnings #Warnings associated to the upload
 		);
+		
+		if($IncludeDataSource -eq $true){ #Update the datasources
+            		$serverDataSources = $ssrs.ListChildren($DataSourceRootPath,$TRUE);
+            		$neededDataSources = $ssrs.GetItemDataSources($report.Path);
+
+            		$neededDataSources | ForEach-Object{
+                		$reportDataSourceName = $_.Name;
+                
+                		$serverDataSources | ForEach-Object{
+                    			$dataSourceName = $_.Name;
+
+                    			if($reportDataSourceName -eq $_.Name){
+                        			$dataSourcePathNew = $_.Path;
+                        			Verbose-WriteLine "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'";
+                        
+                        			$dataSourceReferenceNew = New-Object SSRS.DataSourceReference;
+                        			$dataSourceReferenceNew.Reference = $dataSourcePathNew;
+
+                        			$dataSourceNew = New-Object SSRS.DataSource;
+                        			$dataSourceNew.Name = $_.Name;
+                        			$dataSourceNew.Item = $dataSourceReferenceNew;
+
+                        			$ssrs.SetItemDataSources($report.Path,$dataSourceNew);
+                    			}
+                		}
+            		}
+        	}
 
 		
 		#If any warning was logged during upload, log them to the console
