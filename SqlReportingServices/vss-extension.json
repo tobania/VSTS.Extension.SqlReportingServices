@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "SqlReportingServices",
   "name": "SQL Server Reporting Services Deployment",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "publisher": "tobania",
   "targets": [
     {

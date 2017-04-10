@@ -27,7 +27,7 @@
   "version": {
     "Major": "1",
     "Minor": "3",
-    "Patch": "2"
+    "Patch": "3"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting files",
@@ -67,6 +67,14 @@
       "groupName": "files"
     },
     {
+      "name": "UpdateDataSource",
+      "type": "boolean",
+      "label": "Update Data Source",
+      "helpMarkDown": "Update datasources references which exists in the report with datasources which exist on the reporting server",
+      "groupName": "files",
+      "defaultValue": false
+    },
+    {
       "name": "IncludeDataSource",
       "type": "boolean",
       "label": "Include Data Source",
@@ -94,14 +102,7 @@
       "required": true,
       "visibleRule": "IncludeDataSource = true  || UpdateDataSource = true"
     },
-    {
-      "name": "UpdateDataSource",
-      "type": "boolean",
-      "label": "Update Data Source",
-      "helpMarkDown": "Update datasources references which exists in the report with datasources which exist on the reporting server",
-      "groupName": "files",
-      "defaultValue": false
-    },
+
     {
       "name": "ConnectionString",
       "type": "string",
