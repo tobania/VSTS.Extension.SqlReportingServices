@@ -5,6 +5,7 @@ param(
 	[string]$DataSourceLocalPath,
 	[string]$DataSourceRootPath,
 	[string]$ConnectionString,
+	[string]$UpdateDataSource,
 
 	[string]$IncludeDataSet,
 	[string]$DataSetLocalPath,
@@ -280,35 +281,7 @@ param(
 			$null, #Additional properties to set
 			[ref]$warnings #Warnings associated to the upload
 		);
-		
-		if($IncludeDataSource -eq $true){ #Update the datasources
-            		$serverDataSources = $ssrs.ListChildren($DataSourceRootPath,$TRUE);
-            		$neededDataSources = $ssrs.GetItemDataSources($report.Path);
 
-            		$neededDataSources | ForEach-Object{
-                		$reportDataSourceName = $_.Name;
-                
-                		$serverDataSources | ForEach-Object{
-                    			$dataSourceName = $_.Name;
-
-                    			if($reportDataSourceName -eq $_.Name){
-                        			$dataSourcePathNew = $_.Path;
-                        			Verbose-WriteLine "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'";
-                        
-                        			$dataSourceReferenceNew = New-Object SSRS.DataSourceReference;
-                        			$dataSourceReferenceNew.Reference = $dataSourcePathNew;
-
-                        			$dataSourceNew = New-Object SSRS.DataSource;
-                        			$dataSourceNew.Name = $_.Name;
-                        			$dataSourceNew.Item = $dataSourceReferenceNew;
-
-                        			$ssrs.SetItemDataSources($report.Path,$dataSourceNew);
-                    			}
-                		}
-            		}
-        	}
-
-		
 		#If any warning was logged during upload, log them to the console
 		if($warnings -ne $null){
 			Write-Warning "One or more warnings occured during upload:";
@@ -319,6 +292,39 @@ param(
 			}
 			Write-Warning $warningSb.ToString();
 		}
+		
+		if($UpdateDataSource -eq $true){ #Update the datasources
+		    Write-Host "Updating the DataSources of the report $reportName...";
+			
+			$serverDataSources = $ssrs.ListChildren($DataSourceRootPath,$true);
+            $neededDataSources = $ssrs.GetItemDataSources($report.Path);
+			
+            $neededDataSources | ForEach-Object{
+                $reportDataSourceName = $_.Name;
+				Foreach($serverDataSource in $serverDataSources){
+					if([System.String]::Compare($serverDataSource.Name.Trim(),$reportDataSourceName.Trim(),$true) -eq 0){
+                        $dataSourcePathNew = $serverDataSource.Path;
+						
+                        Write-Host "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'..." -NoNewline;
+                        
+
+                        $dataSourceReferenceNew = New-Object SSRS.DataSourceReference;
+                        $dataSourceReferenceNew.Reference = $dataSourcePathNew;
+
+                        $dataSourceNew = New-Object SSRS.DataSource;
+                        $dataSourceNew.Name =$reportDataSourceName;
+                        $dataSourceNew.Item = $dataSourceReferenceNew;
+						[SSRS.DataSource[]]$arr = @($dataSourceNew);
+                        $ssrs.SetItemDataSources($report.Path,$arr);
+						Write-Host "Done!";
+						break;
+                    }
+                }
+            }
+        }
+
+		
+
 		}catch [System.Exception]{
 			Write-Error $_.Exception.Message;
 			#Terminate script
