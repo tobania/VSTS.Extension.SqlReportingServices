@@ -112,14 +112,20 @@ param(
 	[System.Management.Automation.PSCredential]$auth = $null; #Auth incase there is one
 	if([System.String]::IsNullOrWhiteSpace($WsUsername) -or [System.String]::IsNullOrWhiteSpace($WsPassword)){  #If not use the DefaultCredential (PS session of the machine where this powershell script is executed
 		Write-Host "Creating WebService proxy using default credentials"; 
-		$ssrs =New-WebServiceProxy -Uri $WebserviceUrl -UseDefaultCredential -Namespace "SSRS" -ErrorAction Stop;
+		$ssrs =New-WebServiceProxy -Uri $WebserviceUrl -UseDefaultCredential -ErrorAction Stop;
 	}else{#Incase there is a Webservice user-password pair, use the PSCredential of that pair
 		Write-Host "Creating WebService proxy using credentials";
 		$wsSecurePass = ConvertTo-SecureString -String $WsPassword -AsPlainText -Force
 
 		$auth = New-Object System.Management.Automation.PSCredential -ArgumentList $WsUsername,$wsSecurePass;
-		$ssrs = New-WebServiceProxy -Uri $WebserviceUrl -Credential $auth -Namespace "SSRS" -ErrorAction Stop;
+		$ssrs = New-WebServiceProxy -Uri $WebserviceUrl -Credential $auth -ErrorAction Stop;
 	}
+
+    $type = $ssrs.GetType().Namespace;
+
+    #display datatype, just for our reference
+    Verbose-WriteLine "Got Namespace $datatype for SSRS..."; 
+ 
 
 ##########################################################
 #		           Uploading datasources                 #
@@ -135,7 +141,7 @@ param(
 			Verbose-WriteLine "Reading $datasourceName file...";
 			[xml]$rds = Get-Content -Path $_.FullName; #Read the RDS(XML) files
 			$connectionProperties = $rds.RptDataSource.ConnectionProperties;
-			$Definition = New-Object SSRS.DataSourceDefinition; 
+			$Definition = New-Object ($type + ".DataSourceDefinition"); 
 			if([string]::IsNullOrWhiteSpace($ConnectionString)){ #If there is no connectionstring specified, use the one in RDS
 				$Definition.ConnectString = $connectionProperties.ConnectString;
 			}else{
@@ -224,8 +230,8 @@ param(
 					$bts = Get-Content -Encoding Byte $_.FullName;
 					$fileName = [System.IO.Path]::GetFileNameWithoutExtension($_.FullName);
 					$warning =$null;
-					$props = New-Object "System.Collections.Generic.List[SSRS.Property]";
-					$mime = New-Object SSRS.Property;
+					$props = New-Object "System.Collections.Generic.List["$type + ".Property]";
+					$mime = New-Object ($type + ".Property");
 					$mime.Name = "MimeType";
 					$mime.Value = [System.Web.MimeMapping]::GetMimeMapping($_.FullName); #Set THe correct mimetype
 					$props.Add($mime);
@@ -308,14 +314,14 @@ param(
                         Write-Host "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'..." -NoNewline;
                         
 
-                        $dataSourceReferenceNew = New-Object SSRS.DataSourceReference;
+                        $dataSourceReferenceNew = New-Object($type + ".DataSourceReference");
                         $dataSourceReferenceNew.Reference = $dataSourcePathNew;
 
-                        $dataSourceNew = New-Object SSRS.DataSource;
+                        $dataSourceNew = New-Object ($type + ".DataSource");
                         $dataSourceNew.Name =$reportDataSourceName;
                         $dataSourceNew.Item = $dataSourceReferenceNew;
-						[SSRS.DataSource[]]$arr = @($dataSourceNew);
-                        $ssrs.SetItemDataSources($report.Path,$arr);
+						#[System.Collections.Generic.List[$type + ".DataSource"]]$arr = @($dataSourceNew);
+                        $ssrs.SetItemDataSources($report.Path,$dataSourceNew);
 						Write-Host "Done!";
 						break;
                     }
