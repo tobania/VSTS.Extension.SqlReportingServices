@@ -122,12 +122,10 @@ param(
 	}
 
     $type = $ssrs.GetType().Namespace;
-    $datatype = ($type + '.Property');
 
     #display datatype, just for our reference
-    $datatype;
-    $type;
-
+    Verbose-WriteLine "Got Namespace $datatype for SSRS..."; 
+ 
 
 ##########################################################
 #		           Uploading datasources                 #
