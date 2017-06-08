@@ -141,7 +141,7 @@ param(
 			Verbose-WriteLine "Reading $datasourceName file...";
 			[xml]$rds = Get-Content -Path $_.FullName; #Read the RDS(XML) files
 			$connectionProperties = $rds.RptDataSource.ConnectionProperties;
-			$Definition = New-Object ($type + ".DataSourceDefinition"); 
+			$Definition = New-Object ("$type.DataSourceDefinition"); 
 			if([string]::IsNullOrWhiteSpace($ConnectionString)){ #If there is no connectionstring specified, use the one in RDS
 				$Definition.ConnectString = $connectionProperties.ConnectString;
 			}else{
@@ -230,8 +230,8 @@ param(
 					$bts = Get-Content -Encoding Byte $_.FullName;
 					$fileName = [System.IO.Path]::GetFileNameWithoutExtension($_.FullName);
 					$warning =$null;
-					$props = New-Object "System.Collections.Generic.List["$type + ".Property]";
-					$mime = New-Object ($type + ".Property");
+					$props = New-Object "System.Collections.Generic.List[$type.Property]";
+					$mime = New-Object ("$type.Property");
 					$mime.Name = "MimeType";
 					$mime.Value = [System.Web.MimeMapping]::GetMimeMapping($_.FullName); #Set THe correct mimetype
 					$props.Add($mime);
@@ -314,10 +314,10 @@ param(
                         Write-Host "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'..." -NoNewline;
                         
 
-                        $dataSourceReferenceNew = New-Object($type + ".DataSourceReference");
+                        $dataSourceReferenceNew = New-Object("$type.DataSourceReference");
                         $dataSourceReferenceNew.Reference = $dataSourcePathNew;
 
-                        $dataSourceNew = New-Object ($type + ".DataSource");
+                        $dataSourceNew = New-Object ("$type.DataSource");
                         $dataSourceNew.Name =$reportDataSourceName;
                         $dataSourceNew.Item = $dataSourceReferenceNew;
 						#[System.Collections.Generic.List[$type + ".DataSource"]]$arr = @($dataSourceNew);
