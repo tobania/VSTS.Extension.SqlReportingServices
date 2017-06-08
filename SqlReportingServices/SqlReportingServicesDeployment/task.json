@@ -190,7 +190,7 @@
       "name": "WsUsername",
       "type": "string",
       "label": "Username",
-      "required": true,
+      "required": false,
       "helpMarkDown": "The username to connect with the Webservice",
       "groupName": "webservice"
     },
@@ -198,7 +198,7 @@
       "name": "WsPassword",
       "type": "string",
       "label": "Password",
-      "required": true,
+      "required": false,
       "helpMarkDown": "The password to connect with the webservice. Use a new build or environment variable with its lock enabled on the Variables tab to encrypt this value.",
       "groupName": "webservice"
     },
