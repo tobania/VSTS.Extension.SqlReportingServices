@@ -20,7 +20,8 @@ param(
 	[string]$WsUsername,
 	[string]$WsPassword,
 	[string]$UseVerbose,
-	[string]$OverrideExisting
+	[string]$OverrideExisting,
+	[string]$AddResourceExtension
 )
 	function Verbose-WriteLine{
 		[cmdletbinding()]
@@ -229,6 +230,9 @@ param(
 				$files | ForEach-Object{
 					$bts = Get-Content -Encoding Byte $_.FullName;
 					$fileName = [System.IO.Path]::GetFileNameWithoutExtension($_.FullName);
+					if($AddResourceExtension -eq $true){
+						$fileName = [System.IO.Path]::GetFileName($_.FullName);
+					}
 					$warning =$null;
 					$props = New-Object "System.Collections.Generic.List[$type.Property]";
 					$mime = New-Object ("$type.Property");

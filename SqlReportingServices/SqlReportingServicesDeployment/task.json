@@ -27,7 +27,7 @@
   "version": {
     "Major": "1",
     "Minor": "3",
-    "Patch": "7"
+    "Patch": "8"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting files",
@@ -201,6 +201,15 @@
       "required": false,
       "helpMarkDown": "The password to connect with the webservice. Use a new build or environment variable with its lock enabled on the Variables tab to encrypt this value.",
       "groupName": "webservice"
+    },
+    {
+      "name": "AddResourceExtension",
+      "type": "boolean",
+      "label": "Add the extension to the resource files",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enables or disables adding the file extension behind resource files."
     },
     {
       "name": "OverrideExisting",
