@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="DataSource1">
+  <ConnectionProperties>
+    <Extension>SQL</Extension>
+    <ConnectString>Data Source=axsqld05;Initial Catalog=TestDeploySSRS</ConnectString>
+    <Prompt>Please enter your username and password:</Prompt>
+  </ConnectionProperties>
+  <DataSourceID>383ecb53-549c-4c72-8586-9a0a2c879d39</DataSourceID>
+</RptDataSource>
