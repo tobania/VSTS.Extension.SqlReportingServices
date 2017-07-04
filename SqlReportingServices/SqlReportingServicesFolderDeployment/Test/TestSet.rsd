@@ -3,7 +3,7 @@
   <Description />
   <DataSet Name="DataSet">
     <Query>
-      <DataSourceReference>DataSet</DataSourceReference>
+      <DataSourceReference>DataSource1</DataSourceReference>
       <CommandType>StoredProcedure</CommandType>
       <CommandText>GetCount</CommandText>
       <rd:UseGenericDesigner>true</rd:UseGenericDesigner>

@@ -1,10 +1,10 @@
 {
-  "id": "e99e48ac-8011-45ca-aa36-fc2cec54ecfb",
-  "name": "SqlReportingServicesDeployment",
-  "friendlyName": "SQL Server Reports Deployment",
-  "description": "Deploys the SQL reporting files to the SQL Reporting Service",
+  "id": "40abe74e-bbd1-43af-ac02-4f2364f01d78",
+  "name": "SqlReportingServicesFolderDeployment",
+  "friendlyName": "SQL Server Reports Folder Deployment",
+  "description": "Deploys a folder structure to the SQL Reporting Service",
   "author": "Tobania",
-  "helpMarkDown": "Deploys the SQL reporting files to the SQL Reporting Service",
+  "helpMarkDown": "Deploys a folder structure to the SQL Reporting Service",
   "category": "Deploy",
   "visibility": [
     "Release"
@@ -25,12 +25,12 @@
   },
   "demands": [],
   "version": {
-    "Major": "1",
-    "Minor": "3",
-    "Patch": "8"
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "Deploy SQL Server reporting files",
+  "instanceNameFormat": "Deploy SQL Server reporting folder structure",
   "groups": [
     {
       "name": "files",
@@ -50,133 +50,29 @@
   ],
   "inputs": [
     {
-      "name": "ReportFiles",
-      "type": "filePath",
-      "label": "Report files: ",
+      "name": "RemoteRootPath",
+      "type": "string",
+      "label": "Root path on SSRS: ",
       "required": true,
-      "helpMarkDown": "The path to the rdl file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rdl",
+      "helpMarkDown": "The path on the Sql Server Reporting Service, where to upload the items to",
       "groupName": "files"
     },
 
     {
-      "name": "ReportUploadRootPath",
-      "type": "string",
-      "label": "Upload path",
+      "name": "LocalRootPath",
+      "type": "filePath",
+      "label": "Local Root path",
       "required": true,
-      "helpMarkDown": "The Upload (root) path to upload the RDL files to",
+      "helpMarkDown": "The path to the local environment you would like to upload from",
       "groupName": "files"
     },
     {
-      "name": "UpdateDataSource",
+      "name": "UpdateDataSourceToRemote",
       "type": "boolean",
       "label": "Update Data Source",
       "helpMarkDown": "Update datasources references which exists in the report with datasources which exist on the reporting server",
       "groupName": "files",
       "defaultValue": false
-    },
-    {
-      "name": "IncludeDataSource",
-      "type": "boolean",
-      "label": "Include Data Source",
-      "helpMarkDown": "Upload datasources",
-      "groupName": "files",
-      "defaultValue": false
-    },
-    {
-      "name": "DataSourceLocalPath",
-      "type": "filePath",
-      "label": "Local Datasource path",
-      "helpMarkDown": "\"The path to the rds file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rds,",
-      "defaultValue": "",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeDataSource = true"
-    },
-    {
-      "name": "DataSourceRootPath",
-      "type": "string",
-      "label": "Remote Datasource path",
-      "helpMarkDown": "The path on SSRS to the datasource",
-      "defaultValue": "",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeDataSource = true  || UpdateDataSource = true"
-    },
-
-    {
-      "name": "ConnectionString",
-      "type": "string",
-      "label": "Connectionstring",
-      "helpMarkDown": "The connectionstring to update the datasource with. If you leave it empty, it will use the connectionstring in the RDS file.",
-      "defaultValue": "",
-      "groupName": "files",
-      "visibleRule": "IncludeDataSource = true"
-    },
-    {
-      "name": "IncludeDataSet",
-      "type": "boolean",
-      "label": "Include Data set",
-      "helpMarkDown": "Upload Datasets",
-      "groupName": "files",
-      "defaultValue": false
-    },
-    {
-      "name": "DataSetLocalPath",
-      "type": "filePath",
-      "label": "Local Datasource path",
-      "helpMarkDown": "\"The path to the rsd file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rsd,",
-      "defaultValue": "",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeDataSet = true"
-    },
-    {
-      "name": "DataSetRootPath",
-      "type": "string",
-      "label": "Remote Dataset path",
-      "helpMarkDown": "The path on SSRS to the dataset",
-      "defaultValue": "",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeDataSet = true"
-    },
-    {
-      "name": "IncludeResources",
-      "type": "boolean",
-      "label": "Include Resource files",
-      "helpMarkDown": "Upload additional resource files",
-      "groupName": "files",
-      "defaultValue": false
-    },
-    {
-      "name": "ResourceRootLocalPath",
-      "type": "filePath",
-      "label": "Local resource root path",
-      "helpMarkDown": "The root path containing the resource files to upload",
-      "defaultValue": "",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeResources = true"
-    },
-    {
-      "name": "ResourcePatterns",
-      "type": "multiLine",
-      "label": "Content",
-      "helpMarkDown": "The file patterns to the resources to upload. Each Newline is a new pattern. (Example:*.txt)",
-      "defaultValue": "**",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeResources = true"
-    },
-    {
-      "name": "ResourceRootPath",
-      "type": "string",
-      "label": "Remote resource path",
-      "helpMarkDown": "The path on SSRS to the resource",
-      "defaultValue": "",
-      "groupName": "files",
-      "required": true,
-      "visibleRule": "IncludeResources = true"
     },
     {
       "name": "WebserviceUrl",
