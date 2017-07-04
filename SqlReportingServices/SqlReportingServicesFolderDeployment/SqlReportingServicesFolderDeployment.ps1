@@ -126,7 +126,7 @@ foreach($folder in $dirs.GetEnumerator()){
 
 
 
-$files = @(Get-ChildItem $LocalParentFolder -Recurse);
+$files = @(Get-ChildItem $LocalRootPath -Recurse);
 [Collections.Generic.List[String]]$dataSources = New-Object "System.Collections.Generic.List[String]";
 [Collections.Generic.List[String]]$dataSets = New-Object "System.Collections.Generic.List[String]";
 [Collections.Generic.List[String]]$reports = New-Object "System.Collections.Generic.List[String]";
