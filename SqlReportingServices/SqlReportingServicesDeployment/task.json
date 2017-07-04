@@ -26,8 +26,8 @@
   "demands": [],
   "version": {
     "Major": "1",
-    "Minor": "3",
-    "Patch": "19"
+    "Minor": "4",
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting files",
