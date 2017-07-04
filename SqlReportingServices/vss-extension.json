@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "SqlReportngServices",
   "name": "SQL Server Reporting Services Deployment",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "publisher": "tobania",
   "targets": [
     {
@@ -36,7 +36,8 @@
     }
   },
   "files": [
-    { "path": "SqlReportingServicesDeployment" }
+    { "path": "SqlReportingServicesDeployment" },
+    { "path": "SqlReportingServicesFolderDeployment" }
   ],
   "contributions": [
     {
@@ -47,6 +48,16 @@
       ],
       "properties": {
         "name": "SqlReportingServicesDeployment"
+      }
+    },
+    {
+      "id": "SqlReportingServicesFolderDeployment",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "SqlReportingServicesFolderDeployment"
       }
     }
   ]
