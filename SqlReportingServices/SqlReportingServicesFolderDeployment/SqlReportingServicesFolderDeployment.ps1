@@ -183,8 +183,8 @@ $dataSets | ForEach-Object{
 	$datasetFileName = [System.IO.Path]::GetFileNameWithoutExtension($datasetName);
 	Write-Host "Uploading datasource $datasetName to $DataSetRootPath...";
 	Verbose-WriteLine "Reading $datasetName file...";
-	[xml]$rsd = Get-Content -Path $datasetName;
-	$byteRsd = Get-Content -Encoding Byte -Path $datasetName
+	[xml]$rsd = Get-Content $datasetName;
+	$byteRsd = Get-Content $datasetName -Encoding Byte
 	$warnings = $null;
 	try{
 		[System.IO.FileInfo]$fileInfo = New-Object "System.IO.FileInfo" -ArgumentList $_;
@@ -221,7 +221,7 @@ Add-Type -AssemblyName "System.Web";
 $assets | ForEach-Object{
 	[System.IO.FileInfo]$fileInfo = New-Object "System.IO.FileInfo" -ArgumentList $_;
 	if(!$fileInfo.Attributes.HasFlag([System.IO.FileAttributes]::Directory)){
-		$bts = Get-Content -Encoding Byte $_;
+		$bts = Get-Content $_ -Encoding Byte;
 		$fileName = [System.IO.Path]::GetFileNameWithoutExtension($_);
 		if($AddResourceExtension -eq $true){
 			$fileName = [System.IO.Path]::GetFileName($_);
