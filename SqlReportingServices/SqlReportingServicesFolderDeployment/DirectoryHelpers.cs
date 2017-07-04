@@ -28,11 +28,11 @@ namespace Tobania.SqlReportingFolderDeployment
             foreach (var di in new DirectoryInfo(root).GetDirectories("*", SearchOption.AllDirectories))
             {
                 var relPath = di.Parent.FullName.Replace(root, "").Replace("\\", "/");
-                if (di.Parent.Name.Equals(rootName,StringComparison.OrdinalIgnoreCase) && Path.GetFullPath(di.Parent.FullName).Split('\\').Length == root.Split('\\').Length)
+                if (di.Parent.Name.Equals(rootName,StringComparison.InvariantCultureIgnoreCase) && Path.GetFullPath(di.Parent.FullName).Split('\\').Length == root.Split('\\').Length)
                 {
                     relPath = "/";
-                }                
-                var remPath = remoteRoot + relPath + "/" + di.Name;
+                }
+                var remPath = ExtractRemotePath(di, root, remoteRoot);
                 if (!ret.ContainsKey(remPath))
                 {
                     ret.Add(remPath, di.Name);
@@ -44,7 +44,7 @@ namespace Tobania.SqlReportingFolderDeployment
         public static string ExtractRemotePath(string path, string localRoot, string remoteRoot)
         {
             //if it is the local root, return /
-            if (path.Replace("\\", "").Equals(localRoot.Replace("\\", ""), StringComparison.OrdinalIgnoreCase))
+            if (path.Replace("\\", "").Equals(localRoot.Replace("\\", ""), StringComparison.InvariantCultureIgnoreCase))
             {
                 return remoteRoot;
             }
