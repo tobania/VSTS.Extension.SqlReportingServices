@@ -167,7 +167,7 @@ $dataSources | ForEach-Object{
 	#Documentation of the method below: https://msdn.microsoft.com/en-us/library/reportservice2010.reportingservice2010.createdatasource.aspx
 	$createdDatasource = $ssrs.CreateDataSource( #Create/Update the Datasource
 		$rdsName, #The name of the RDS
-		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
+		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
 		$true, #Override existing
 		$Definition,# The definition ("xml")
 		$null #Additional properties
@@ -191,7 +191,7 @@ $dataSets | ForEach-Object{
 		$dataset = $ssrs.CreateCatalogItem(
 			"DataSet",
 			$datasetFileName,
-			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
+			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
 			$true,
 			$byteRsd,
 			$null,
@@ -236,7 +236,7 @@ $assets | ForEach-Object{
 		$resource = $ssrs.CreateCatalogItem(
 			"Resource",
 			$fileName,
-			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
+			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
 			$true,
 			$bts,
 			$props.ToArray(),
@@ -269,7 +269,7 @@ $reports | ForEach-Object{
 	$report = $ssrs.CreateCatalogItem(
 		"Report", #The Catalog Item
 		$reportName, #The report name
-		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
+		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
 		$OverrideExisting, #Overriding files which exists
 		$bytes, #The bytes to upload
 		$null, #Additional properties to set
