@@ -28,11 +28,12 @@ namespace Tobania.SqlReportingFolderDeployment
             foreach (var di in new DirectoryInfo(root).GetDirectories("*", SearchOption.AllDirectories))
             {
                 var relPath = di.Parent.FullName.Replace(root, "").Replace("\\", "/");
-                if (di.Parent.Name.Equals(rootName,StringComparison.InvariantCultureIgnoreCase) && Path.GetFullPath(di.Parent.FullName).Split('\\').Length == root.Split('\\').Length)
+                if (di.Parent.Name.Equals(rootName,StringComparison.InvariantCultureIgnoreCase) 
+                    || di.Parent.FullName.Replace("\\", "").Equals(root.Replace("\\", ""), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    relPath = "/";
-                }
-                var remPath = ExtractRemotePath(di.FullName, root, remoteRoot);
+                    relPath = "";
+                }                
+                var remPath = remoteRoot + relPath + "/" + di.Name;
                 if (!ret.ContainsKey(remPath))
                 {
                     ret.Add(remPath, di.Name);

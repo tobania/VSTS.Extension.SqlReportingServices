@@ -30,7 +30,8 @@ param(
 ##########################################################
 #                      SETUP OF CODE                     #
 ##########################################################
-Add-Type -Path .\DirectoryHelpers.cs
+Add-Type -Path .\DirectoryHelpers.cs -ErrorAction SilentlyContinue; #Errors can be ignored
+
 	Write-Host "Preparing Deployment of RDL files...";
 
 
