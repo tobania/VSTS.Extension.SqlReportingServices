@@ -32,7 +32,7 @@ namespace Tobania.SqlReportingFolderDeployment
                 {
                     relPath = "/";
                 }
-                var remPath = ExtractRemotePath(di, root, remoteRoot);
+                var remPath = ExtractRemotePath(di.FullName, root, remoteRoot);
                 if (!ret.ContainsKey(remPath))
                 {
                     ret.Add(remPath, di.Name);
