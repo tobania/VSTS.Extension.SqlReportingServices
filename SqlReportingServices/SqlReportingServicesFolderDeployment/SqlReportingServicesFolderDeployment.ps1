@@ -95,10 +95,34 @@ Add-Type -Path .\DirectoryHelpers.cs
 $dirs = [Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::GetFolderStructure($LocalRootPath,$RemoteRootPath);
 
 $dirs;
-foreach($folder in $dirs){
-	$ssrs.CreateFolder($folder.Value,$folder.Key.Replace($folder.Value));
+foreach($folder in $dirs.GetEnumerator()){
+	[string]$folderPath=$folder.Key.Replace("/" + $folder.Value,"");
+	[string]$folderName = $folder.Value;
+	if($folderName.IndexOf('/') -eq 0){
+		$folderName = $folderName.Substring(1);
+	}
 
+	$props = New-Object "System.Collections.Generic.List[$type.Property]";
+	$mime = New-Object ("$type.Property");
+	$mime.Name = "Description";
+	$mime.Value = "Uploaded by Tobania.VSTS.SqlREportinServicesFolderDeployment";
+	$props.Add($mime);
+	
+	if($folderPath.IndexOf('/') -ne 0){
+		$folderPath = "/" + $folderPath;
+	}
+	Write-Host $folderPath;
+	try{
+		$ssrs.CreateFolder($folderName,$folderPath,$props.ToArray());
+	}catch{
+		 if($_.Exception.Message.ToLower().Contains("already exists")){
+			Verbose-WriteLine "Folder $folderName already exists, Skipping!" 
+		 }else{
+			throw;
+		 }
+	}
 }
+
 
 
 $files = @(Get-ChildItem $LocalParentFolder -Recurse);
@@ -122,7 +146,7 @@ foreach($file in $files){
 	}
 }
 
-Write-Host "Reports"
+Write-Host "Uploading Data sources...";
 
 $dataSources | ForEach-Object{
 	[xml]$rds = Get-Content -Path $_; #Read the RDS(XML) files
@@ -137,10 +161,12 @@ $dataSources | ForEach-Object{
 	Write-Host ($Definition | Format-List | Out-String)
 	$rdsName = $rds.RptDataSource.Name;
 	Verbose-WriteLine "Creating Datasource $rdsName";
+	[System.IO.FileInfo]$fileInfo = New-Object "System.IO.FileInfo" -ArgumentList $_;
+	
 	#Documentation of the method below: https://msdn.microsoft.com/en-us/library/reportservice2010.reportingservice2010.createdatasource.aspx
 	$createdDatasource = $ssrs.CreateDataSource( #Create/Update the Datasource
 		$rdsName, #The name of the RDS
-		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($_,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
+		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
 		$true, #Override existing
 		$Definition,# The definition ("xml")
 		$null #Additional properties
@@ -148,6 +174,9 @@ $dataSources | ForEach-Object{
 
 
 };
+
+Write-Host "Uploading Datasets...";
+
 $dataSets | ForEach-Object{
 	$datasetName = $_; 
 	$datasetFileName = [System.IO.Path]::GetFileNameWithoutExtension($datasetName);
@@ -157,10 +186,11 @@ $dataSets | ForEach-Object{
 	$byteRsd = Get-Content -Encoding Byte -Path $datasetName
 	$warnings = $null;
 	try{
+		[System.IO.FileInfo]$fileInfo = New-Object "System.IO.FileInfo" -ArgumentList $_;
 		$dataset = $ssrs.CreateCatalogItem(
 			"DataSet",
 			$datasetFileName,
-			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($_,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
+			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
 			$true,
 			$byteRsd,
 			$null,
@@ -183,104 +213,115 @@ $dataSets | ForEach-Object{
 		exit -1;
 	}
 };
+
+Write-Host "Uploading Assets...";
+
 Add-Type -AssemblyName "System.Web";
 $assets | ForEach-Object{
-	$bts = Get-Content -Encoding Byte $_;
-	$fileName = [System.IO.Path]::GetFileNameWithoutExtension($_);
-	if($AddResourceExtension -eq $true){
-		$fileName = [System.IO.Path]::GetFileName($_);
-	}
-	$warning =$null;
-	$props = New-Object "System.Collections.Generic.List[$type.Property]";
-	$mime = New-Object ("$type.Property");
-	$mime.Name = "MimeType";
-	$mime.Value = [System.Web.MimeMapping]::GetMimeMapping($_); #Set THe correct mimetype
-	$props.Add($mime);
-	$resource = $ssrs.CreateCatalogItem(
-		"Resource",
-		$fileName,
-		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($_,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
-		$true,
-		$bts,
-		$props.ToArray(),
-		[ref]$warning
-	);
-	if($warnings -ne $null){
-		Write-Warning "One or more warnings occured during upload:";
-		$warningSb = New-Object System.Text.StringBuilder;
-		$warnings | ForEach-Object{
-			$txtWarning = $_.Message;
-			$warningSb.AppendLine("`t- {$txtWarning}");
+	[System.IO.FileInfo]$fileInfo = New-Object "System.IO.FileInfo" -ArgumentList $_;
+	if(!$fileInfo.Attributes.HasFlag([System.IO.FileAttributes]::Directory)){
+		$bts = Get-Content -Encoding Byte $_;
+		$fileName = [System.IO.Path]::GetFileNameWithoutExtension($_);
+		if($AddResourceExtension -eq $true){
+			$fileName = [System.IO.Path]::GetFileName($_);
 		}
-		Write-Warning $warningSb.ToString();
+		$warning =$null;
+		$props = New-Object "System.Collections.Generic.List[$type.Property]";
+		$mime = New-Object ("$type.Property");
+		$mime.Name = "MimeType";
+		$mime.Value = [System.Web.MimeMapping]::GetMimeMapping($_); #Set THe correct mimetype
+		$props.Add($mime);
+	
+		$resource = $ssrs.CreateCatalogItem(
+			"Resource",
+			$fileName,
+			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
+			$true,
+			$bts,
+			$props.ToArray(),
+			[ref]$warning
+		);
+		if($warnings -ne $null){
+			Write-Warning "One or more warnings occured during upload:";
+			$warningSb = New-Object System.Text.StringBuilder;
+			$warnings | ForEach-Object{
+				$txtWarning = $_.Message;
+				$warningSb.AppendLine("`t- {$txtWarning}");
+			}
+			Write-Warning $warningSb.ToString();
+		}
 	}
 }
 
-$ReportFiles | ForEach-Object{
-{ 
-		$reportName = [System.IO.Path]::GetFileNameWithoutExtension($_); #Get the name of the reportname
-		$bytes = [System.IO.File]::ReadAllBytes($_); #Get The path to upload
-		$byteLenght = $bytes.Lenght; #for verbose logging 
-		Write-Host "Uploading report $reportName to $ReportUploadRootPath...";
-		Verbose-WriteLine "Uploading $reportName with filesize $byteLength bytes"; 
-		$warnings =$null; #Warnings associated to the upload
-		try{
-		$report = $ssrs.CreateCatalogItem(
-			"Report", #The Catalog Item
-			$reportName, #The report name
-			[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($_,$LocalRootPath,$RemoteRootPath), #Let the helper do the conversion
-			$OverrideExisting, #Overriding files which exists
-			$bytes, #The bytes to upload
-			$null, #Additional properties to set
-			[ref]$warnings #Warnings associated to the upload
-		);
+Write-Host "Uploading Reports..." + $ReportFiles.Count; 
 
-			#If any warning was logged during upload, log them to the console
-			if($warnings -ne $null){
-				Write-Warning "One or more warnings occured during upload:";
-				$warningSb = New-Object System.Text.StringBuilder;
-				$warnings | ForEach-Object{
-					$txtWarning = $_.Message;
-					$warningSb.AppendLine("`t- {$txtWarning}");
-				}
-				Write-Warning $warningSb.ToString();
+$reports | ForEach-Object{
+	if(![String]::IsNullOrWhiteSpace($_)){
+	$reportName = [System.IO.Path]::GetFileNameWithoutExtension($_); #Get the name of the reportname
+	$bytes = [System.IO.File]::ReadAllBytes($_); #Get The path to upload
+	$byteLenght = $bytes.Lenght; #for verbose logging 
+	Write-Host "Uploading report $reportName to $ReportUploadRootPath...";
+	Verbose-WriteLine "Uploading $reportName with filesize $byteLength bytes"; 
+	$warnings =$null; #Warnings associated to the upload
+	try{
+	[System.IO.FileInfo]$fileInfo = new-object 'System.IO.FileInfo' -ArgumentList $_;
+	$report = $ssrs.CreateCatalogItem(
+		"Report", #The Catalog Item
+		$reportName, #The report name
+		[Tobania.SqlReportingFolderDeployment.DirectoryHelpers]::ExtractRemotePath($fileInfo.Directory,$LocalRootPath,$RemoteRootPath).Replace("\\","/"), #Let the helper do the conversion
+		$OverrideExisting, #Overriding files which exists
+		$bytes, #The bytes to upload
+		$null, #Additional properties to set
+		[ref]$warnings #Warnings associated to the upload
+	);
+
+		#If any warning was logged during upload, log them to the console
+		if($warnings -ne $null){
+			Write-Warning "One or more warnings occured during upload:";
+			$warningSb = New-Object System.Text.StringBuilder;
+			$warnings | ForEach-Object{
+				$txtWarning = $_.Message;
+				$warningSb.AppendLine("`t- {$txtWarning}");
 			}
+			Write-Warning $warningSb.ToString();
+		}
 		
-			if($UpdateDataSource -eq $true){ #Update the datasources
-				Write-Host "Updating the DataSources of the report $reportName...";
+		if($UpdateDataSourceToRemote -eq $true){ #Update the datasources
+			Write-Host "Updating the DataSources of the report $reportName...";
 			
-				$serverDataSources = $ssrs.ListChildren($DataSourceRootPath,$true);
-				$neededDataSources = $ssrs.GetItemDataSources($report.Path);
+			$serverDataSources = $ssrs.ListChildren($RemoteRootPath,$true);
+			$neededDataSources = $ssrs.GetItemDataSources($report.Path);
 			
-				$neededDataSources | ForEach-Object{
-					$reportDataSourceName = $_.Name;
-					Foreach($serverDataSource in $serverDataSources){
-						if([System.String]::Compare($serverDataSource.Name.Trim(),$reportDataSourceName.Trim(),$true) -eq 0){
-							$dataSourcePathNew = $serverDataSource.Path;
+			$neededDataSources | ForEach-Object{
+				$reportDataSourceName = $_.Name;
+				Foreach($serverDataSource in $serverDataSources){
+					if([System.String]::Compare($serverDataSource.Name.Trim(),$reportDataSourceName.Trim(),$true) -eq 0){
+						$dataSourcePathNew = $serverDataSource.Path;
 						
-							Write-Host "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'..." -NoNewline;
+						Write-Host "Updating DataSource '$reportDataSourceName' to path '$dataSourcePathNew'..." -NoNewline;
 							
-							$dataSourceReferenceNew = New-Object("$type.DataSourceReference");
-							$dataSourceReferenceNew.Reference = $dataSourcePathNew;
+						$dataSourceReferenceNew = New-Object("$type.DataSourceReference");
+						$dataSourceReferenceNew.Reference = $dataSourcePathNew;
 
-							$dataSourceNew = New-Object ("$type.DataSource");
-							$dataSourceNew.Name =$reportDataSourceName;
-							$dataSourceNew.Item = $dataSourceReferenceNew;
-							#[System.Collections.Generic.List[$type + ".DataSource"]]$arr = @($dataSourceNew);
-							$ssrs.SetItemDataSources($report.Path,$dataSourceNew);
-							Write-Host "Done!";
-							break;
-						}
+						$dataSourceNew = New-Object ("$type.DataSource");
+						$dataSourceNew.Name =$reportDataSourceName;
+						$dataSourceNew.Item = $dataSourceReferenceNew;
+						#[System.Collections.Generic.List[$type + ".DataSource"]]$arr = @($dataSourceNew);
+						$ssrs.SetItemDataSources($report.Path,$dataSourceNew);
+						Write-Host "Done!";
+						break;
 					}
 				}
 			}
-		}catch [System.Exception]{
-			Write-Error $_.Exception.Message;
-			#Terminate script
-			exit -1;
 		}
+	}catch [System.Exception]{
+		Write-Error $_.Exception.Message;
+		#Terminate script
+		exit -1;
+	}
 	}
 }
+
 
 
 

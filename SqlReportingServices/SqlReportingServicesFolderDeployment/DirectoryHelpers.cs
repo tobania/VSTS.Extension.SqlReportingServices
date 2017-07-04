@@ -43,7 +43,13 @@ namespace Tobania.SqlReportingFolderDeployment
 
         public static string ExtractRemotePath(string path, string localRoot, string remoteRoot)
         {
-            string newPath = path.Replace(localRoot, "");
+            //if it is the local root, return /
+            if (path.Replace("\\", "").Equals(localRoot.Replace("\\", ""), StringComparison.OrdinalIgnoreCase))
+            {
+                return remoteRoot;
+            }
+
+            string newPath = path.Replace(localRoot, "").Replace("\\","/");
             if(newPath.IndexOf("/") == 0)
             {
                 newPath = newPath.Substring(0);
