@@ -277,7 +277,7 @@ param(
 	$files | ForEach-Object{ 
 		$reportName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name); #Get the name of the reportname
 		$bytes = [System.IO.File]::ReadAllBytes($_.FullName); #Get The path to upload
-		$byteLenght = $bytes.Lenght; #for verbose logging 
+		$byteLength = $bytes.Length; #for verbose logging 
 		Write-Host "Uploading report $reportName to $ReportUploadRootPath...";
 		Verbose-WriteLine "Uploading $reportName with filesize $byteLength bytes"; 
 		$warnings =$null; #Warnings associated to the upload
