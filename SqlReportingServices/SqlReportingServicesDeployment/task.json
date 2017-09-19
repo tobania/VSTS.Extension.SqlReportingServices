@@ -52,41 +52,41 @@
     {
       "name": "ReportFiles",
       "type": "filePath",
-      "label": "Report files: ",
+      "label": "Local Report Path",
       "required": true,
-      "helpMarkDown": "The path to the rdl file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rdl",
+      "helpMarkDown": "The path to the RDL file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rdl",
       "groupName": "files"
     },
 
     {
       "name": "ReportUploadRootPath",
       "type": "string",
-      "label": "Upload path",
+      "label": "Report Upload Path",
       "required": true,
-      "helpMarkDown": "The Upload (root) path to upload the RDL files to",
+      "helpMarkDown": "The path to the folder on the SSRS server to which the RDL files should be uploaded",
       "groupName": "files"
     },
     {
       "name": "UpdateDataSource",
       "type": "boolean",
       "label": "Update Data Source",
-      "helpMarkDown": "Update datasources references which exists in the report with datasources which exist on the reporting server",
+      "helpMarkDown": "Update Data Source references which exist in the reports to point to Data Sources which exist on the reporting server. This must begin with a forward slash (/).",
       "groupName": "files",
       "defaultValue": false
     },
     {
       "name": "IncludeDataSource",
       "type": "boolean",
-      "label": "Include Data Source",
-      "helpMarkDown": "Upload datasources",
+      "label": "Include Data Sources",
+      "helpMarkDown": "Upload Data Sources",
       "groupName": "files",
       "defaultValue": false
     },
     {
       "name": "DataSourceLocalPath",
       "type": "filePath",
-      "label": "Local Datasource path",
-      "helpMarkDown": "\"The path to the rds file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rds,",
+      "label": "Local Data Source Path",
+      "helpMarkDown": "\"The path to the RDS file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rds,",
       "defaultValue": "",
       "groupName": "files",
       "required": true,
@@ -95,8 +95,8 @@
     {
       "name": "DataSourceRootPath",
       "type": "string",
-      "label": "Remote Datasource path",
-      "helpMarkDown": "The path on SSRS to the datasource",
+      "label": "Remote Data Source Path",
+      "helpMarkDown": "The path to the folder on the SSRS server to which the RDS files should be uploaded. This must begin with a forward slash (/).",
       "defaultValue": "",
       "groupName": "files",
       "required": true,
@@ -106,8 +106,8 @@
     {
       "name": "ConnectionString",
       "type": "string",
-      "label": "Connectionstring",
-      "helpMarkDown": "The connectionstring to update the datasource with. If you leave it empty, it will use the connectionstring in the RDS file.",
+      "label": "Connection String",
+      "helpMarkDown": "The connection string to update the Data Source with. If left empty, the connection string in the RDS file will be used.",
       "defaultValue": "",
       "groupName": "files",
       "visibleRule": "IncludeDataSource = true"
@@ -115,7 +115,7 @@
     {
       "name": "IncludeDataSet",
       "type": "boolean",
-      "label": "Include Data set",
+      "label": "Include Datasets",
       "helpMarkDown": "Upload Datasets",
       "groupName": "files",
       "defaultValue": false
@@ -123,8 +123,8 @@
     {
       "name": "DataSetLocalPath",
       "type": "filePath",
-      "label": "Local Datasource path",
-      "helpMarkDown": "\"The path to the rsd file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rsd,",
+      "label": "Local Dataset Path",
+      "helpMarkDown": "\"The path to the RSD file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rsd,",
       "defaultValue": "",
       "groupName": "files",
       "required": true,
@@ -133,8 +133,8 @@
     {
       "name": "DataSetRootPath",
       "type": "string",
-      "label": "Remote Dataset path",
-      "helpMarkDown": "The path on SSRS to the dataset",
+      "label": "Remote Dataset Path",
+      "helpMarkDown": "The path to the folder on the SSRS server to which the RSD files should be uploaded. This must begin with a forward slash (/).",
       "defaultValue": "",
       "groupName": "files",
       "required": true,
@@ -143,7 +143,7 @@
     {
       "name": "IncludeResources",
       "type": "boolean",
-      "label": "Include Resource files",
+      "label": "Include Resource Files",
       "helpMarkDown": "Upload additional resource files",
       "groupName": "files",
       "defaultValue": false
@@ -151,8 +151,8 @@
     {
       "name": "ResourceRootLocalPath",
       "type": "filePath",
-      "label": "Local resource root path",
-      "helpMarkDown": "The root path containing the resource files to upload",
+      "label": "Local Resource Path",
+      "helpMarkDown": "The root path containing the Resource files to upload",
       "defaultValue": "",
       "groupName": "files",
       "required": true,
@@ -171,8 +171,8 @@
     {
       "name": "ResourceRootPath",
       "type": "string",
-      "label": "Remote resource path",
-      "helpMarkDown": "The path on SSRS to the resource",
+      "label": "Remote Resource Path",
+      "helpMarkDown": "The path to the folder on the SSRS server to which the RESX file(s) should be uploaded. This must begin with a forward slash (/).",
       "defaultValue": "",
       "groupName": "files",
       "required": true,
@@ -181,9 +181,9 @@
     {
       "name": "WebserviceUrl",
       "type": "string",
-      "label": "Webservice URL",
+      "label": "Web Service URL",
       "required": true,
-      "helpMarkDown": "The URL to the SQL server reporting Webservice. (Example: http(s)://[ServernameFQDN]/ReportServer/ReportService2010.asmx?wsdl)",
+      "helpMarkDown": "The URL of the SSRS Web Service management endpoint (see https://docs.microsoft.com/en-us/sql/reporting-services/report-server-web-service/methods/report-server-web-service-endpoints). (Example: http(s)://[ServernameFQDN]/ReportServer/ReportService2010.asmx?wsdl)",
       "groupName": "webservice"
     },
     {
@@ -191,7 +191,7 @@
       "type": "string",
       "label": "Username",
       "required": false,
-      "helpMarkDown": "The username to connect with the Webservice",
+      "helpMarkDown": "The username to use for connecting to the SSRS Web Service",
       "groupName": "webservice"
     },
     {
@@ -199,13 +199,13 @@
       "type": "string",
       "label": "Password",
       "required": false,
-      "helpMarkDown": "The password to connect with the webservice. Use a new build or environment variable with its lock enabled on the Variables tab to encrypt this value.",
+      "helpMarkDown": "The password to use to connect to the SSRS Web Service. Use a Release or Environment Variable set to Secret on the Variables tab to encrypt this value.",
       "groupName": "webservice"
     },
     {
       "name": "AddResourceExtension",
       "type": "boolean",
-      "label": "Add the extension to the resource files",
+      "label": "Add the Extension to the Resource Files",
       "required": false,
       "defaultValue": false,
       "groupName": "advanced",
@@ -214,7 +214,7 @@
     {
       "name": "OverrideExisting",
       "type": "boolean",
-      "label": "Override existing files",
+      "label": "Override Existing Files",
       "required": false,
       "defaultValue": true,
       "groupName": "advanced",
@@ -223,7 +223,7 @@
     {
       "name": "UseVerbose",
       "type": "boolean",
-      "label": "Verbose",
+      "label": "Verbose Logging",
       "required": false,
       "defaultValue": false,
       "groupName": "advanced",
