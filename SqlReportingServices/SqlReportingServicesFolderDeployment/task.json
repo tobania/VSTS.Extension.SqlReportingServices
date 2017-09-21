@@ -27,7 +27,7 @@
   "version": {
     "Major": "1",
     "Minor": "0",
-    "Patch": "2"
+    "Patch": "4"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting folder structure",
@@ -52,9 +52,9 @@
     {
       "name": "RemoteRootPath",
       "type": "string",
-      "label": "Root path on SSRS: ",
+      "label": "Remote Upload Path: ",
       "required": true,
-      "helpMarkDown": "The path on the Sql Server Reporting Service, where to upload the items to",
+      "helpMarkDown": "The path to the folder on the SSRS server to which the files should be uploaded",
       "groupName": "files"
     },
 
@@ -63,14 +63,14 @@
       "type": "filePath",
       "label": "Local Root path",
       "required": true,
-      "helpMarkDown": "The path to the local environment you would like to upload from",
+      "helpMarkDown": "The path to the local file(s). Can use Wildcards: $(System.DefaultWorkingDirectory)/**/*.rdl",
       "groupName": "files"
     },
     {
       "name": "UpdateDataSourceToRemote",
       "type": "boolean",
       "label": "Update Data Source",
-      "helpMarkDown": "Update datasources references which exists in the report with datasources which exist on the reporting server",
+      "helpMarkDown": "Update Data Source references which exist in the reports to point to Data Sources which exist on the reporting server. This must begin with a forward slash (/).",
       "groupName": "files",
       "defaultValue": false
     },
@@ -79,7 +79,7 @@
       "type": "string",
       "label": "Webservice URL",
       "required": true,
-      "helpMarkDown": "The URL to the SQL server reporting Webservice. (Example: http(s)://[ServernameFQDN]/ReportServer/ReportService2010.asmx?wsdl)",
+      "helpMarkDown": "The URL of the SSRS Web Service management endpoint (see https://docs.microsoft.com/en-us/sql/reporting-services/report-server-web-service/methods/report-server-web-service-endpoints). (Example: http(s)://[ServernameFQDN]/ReportServer/ReportService2010.asmx?wsdl)",
       "groupName": "webservice"
     },
     {
@@ -87,7 +87,7 @@
       "type": "string",
       "label": "Username",
       "required": false,
-      "helpMarkDown": "The username to connect with the Webservice",
+      "helpMarkDown": "The username to use for connecting to the SSRS Web Service",
       "groupName": "webservice"
     },
     {
@@ -95,7 +95,7 @@
       "type": "string",
       "label": "Password",
       "required": false,
-      "helpMarkDown": "The password to connect with the webservice. Use a new build or environment variable with its lock enabled on the Variables tab to encrypt this value.",
+      "helpMarkDown": "The password to use to connect to the SSRS Web Service. Use a Release or Environment Variable set to Secret on the Variables tab to encrypt this value.",
       "groupName": "webservice"
     },
     {
