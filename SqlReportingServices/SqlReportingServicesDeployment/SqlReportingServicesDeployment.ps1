@@ -21,7 +21,8 @@ param(
 	[string]$WsPassword,
 	[string]$UseVerbose,
 	[string]$OverrideExisting,
-	[string]$AddResourceExtension
+	[string]$AddResourceExtension,
+	[string]$CreateMissingFolders
 )
 	function Verbose-WriteLine{
 		[cmdletbinding()]
@@ -40,6 +41,43 @@ param(
 			#$Host.UI.RawUI.BackgroundColor = $oldBackColor;
 		}
 	}
+
+	
+	function Create-MissingFolders{
+		[cmdletbinding()]
+		param(
+			[Parameter(Position=1)]$uploadRootPath
+		)
+
+		$uploadRootPathItem = $ssrs.ListChildren("/", $true) | Where-Object {$_.Path -eq $uploadRootPath -and $_.TypeName -eq "Folder"}
+
+		if($uploadRootPathItem -eq $null)
+		{
+			$rootFolder = '/'
+        
+			$uploadRootPath.Split('/') | Where-Object {$_.Length -gt 0} | ForEach-Object {
+				$folderName = $_
+				$existingFolder = $ssrs.ListChildren($rootFolder, $true) | Where-Object {$_.TypeName -eq "Folder" -and $_.Name -eq $folderName}
+
+				if($existingFolder -eq $null)
+				{
+					Write-Host "Creating $folderName in $rootFolder"
+					$ssrs.CreateFolder($folderName, $rootFolder, $null)
+				}
+				if($rootFolder -eq '/')
+				{
+					$rootFolder += $folderName
+				}
+				else
+				{
+					$rootFolder += "/$folderName"
+				}
+			}
+		}
+	}
+
+    
+
 ##########################################################
 #                      SETUP OF CODE                     #
 ##########################################################
@@ -134,8 +172,15 @@ param(
 
 	$rdsFiles = @(Get-ChildItem $DataSourceLocalPath);
 	$rdsFileCount = $rdsFiles.Length;
-	if($IncludeDataSource -eq $true){ #Update the datasources
-		Write-Host "Updating $rdsFileCount datasource files to $WebserviceUrl ($ReportUploadRootPath)...";
+	if($IncludeDataSource -eq $true){ 
+		
+		if($CreateMissingFolders -eq $true)
+		{
+			Create-MissingFolders $DataSourceRootPath
+		}
+		
+		#Update the datasources
+		Write-Host "Updating $rdsFileCount datasource files to $WebserviceUrl ($DataSourceRootPath)...";
 		$rdsFiles | ForEach-Object{
 			$datasourceName = $_.FullName;
 			Write-Host "Uploading datasource $datasourceName to $DataSourceRootPath...";
@@ -173,6 +218,12 @@ param(
 	$rsdFiles = @(Get-ChildItem $DataSetLocalPath);
 	$rsdFileCount = $rsdFiles.Length;
 	if($IncludeDataSet -eq $true){
+
+		if($CreateMissingFolders -eq $true)
+		{
+			Create-MissingFolders $DataSetRootPath
+		}
+
 		Write-Host "Uploading $rsdFileCount Dataset files";
 		$rsdFiles | ForEach-Object {
 			$datasetName = $_.FullName; 
@@ -216,6 +267,12 @@ param(
 ##########################################################
 
 	if($IncludeResources -eq $true){
+
+		if($CreateMissingFolders -eq $true)
+		{
+			Create-MissingFolders $ResourceRootPath
+		}
+
 		Add-Type -AssemblyName "System.Web";
 		ForEach($item in @($ResourcePatterns.Split("`n"))){
 			Write-Warning $item;
@@ -271,6 +328,11 @@ param(
 	$files = @(Get-ChildItem $ReportFiles);
 	$fileCount = $files.Length;
 	Verbose-WriteLine "Found $fileCount items in $ReportFiles";
+
+	if($CreateMissingFolders -eq $true)
+	{
+		Create-MissingFolders $ReportUploadRootPath
+	}
 
 	Write-Host "Uploading $fileCount files to $WebserviceUrl ($ReportUploadRootPath)...";
 	#Itterate over all files and append them to a catalogitem

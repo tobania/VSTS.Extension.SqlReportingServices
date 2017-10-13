@@ -27,7 +27,7 @@
   "version": {
     "Major": "1",
     "Minor": "4",
-    "Patch": "3"
+    "Patch": "4"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting files",
@@ -228,6 +228,15 @@
       "defaultValue": false,
       "groupName": "advanced",
       "helpMarkDown": "Enable or disable verbose logging"
+    },
+    {
+      "name": "CreateMissingFolders",
+      "type": "boolean",
+      "label": "Create Missing Folders",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable creation of missing folders on the target"
     }
 
   ],
