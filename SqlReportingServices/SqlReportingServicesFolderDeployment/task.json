@@ -26,8 +26,8 @@
   "demands": [],
   "version": {
     "Major": "1",
-    "Minor": "0",
-    "Patch": "4"
+    "Minor": "5",
+    "Patch": "5"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting folder structure",
@@ -124,6 +124,15 @@
       "defaultValue": false,
       "groupName": "advanced",
       "helpMarkDown": "Enable or disable verbose logging"
+    },
+    {
+      "name": "IgnoreSQLVersion",
+      "type": "boolean",
+      "label": "Ignore SQL Version",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Ignore SQL Version mismatch between Server and Reports"
     }
 
   ],

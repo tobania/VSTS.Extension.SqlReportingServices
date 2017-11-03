@@ -21,7 +21,8 @@ param(
 	[string]$WsPassword,
 	[string]$UseVerbose,
 	[string]$OverrideExisting,
-	[string]$AddResourceExtension
+	[string]$AddResourceExtension,
+	[string]$IgnoreSQLVersion
 )
 	function Verbose-WriteLine{
 		[cmdletbinding()]
@@ -50,6 +51,7 @@ param(
 	Verbose-WriteLine "Using following parameters:"
 	Verbose-WriteLine "ReportFiles: $ReportFiles";
 	Verbose-WriteLine "Upload path: $ReportUploadRootPath";
+	Verbose-WriteLine "Ignore SQL Version: $IgnoreSQLVersion";
 
 	Verbose-WriteLine "IncludeDataSource: $IncludeDataSource";
 	Verbose-WriteLine "DataSourcePath: $DataSourcePath";
@@ -336,9 +338,15 @@ param(
 		
 
 		}catch [System.Exception]{
-			Write-Error $_.Exception.Message;
-			#Terminate script
-			exit -1;
+			if($_.Exception.Message -Match "The definition of this report is not valid or supported by this version of Reporting Services." -and $IgnoreSQLVersion -and $IgnoreSQLVersion -eq $true){
+				Write-Host $_.Exception.Message;
+				Write-Host "Ignore SQL Version errors is enabled, continuing...";
+			}
+			else {
+				Write-Error $_.Exception.Message;
+				#Terminate script
+				exit -1;
+			}
 		}
 
 	}

@@ -7,7 +7,8 @@ param(
 	[string]$WsPassword,
 	[string]$UseVerbose,
 	[string]$OverrideExisting,
-	[string]$AddResourceExtension
+	[string]$AddResourceExtension,
+	[string]$IgnoreSQLVersion
 )
 	function Verbose-WriteLine{
 		[cmdletbinding()]
@@ -40,6 +41,7 @@ Add-Type -Path .\DirectoryHelpers.cs -ErrorAction SilentlyContinue; #Errors can 
 	Verbose-WriteLine "Remote root path: $RemoteRootPath";
 	Verbose-WriteLine "Local root path: $LocalRootPath";
 	Verbose-WriteLine "Attempt to update the datasource path: $UpdateDataSourceToRemote";
+	Verbose-WriteLine "Ignore SQL Version: $IgnoreSQLVersion";
 	
 	$hasWsPassword = "N/A";
 	if([System.String]::IsNullOrWhiteSpace($WsPassword) -eq $false){ #Check if the Webservice HAS a password and mark it with some stars
@@ -316,9 +318,15 @@ $reports | ForEach-Object{
 			}
 		}
 	}catch [System.Exception]{
-		Write-Error $_.Exception.Message;
-		#Terminate script
-		exit -1;
+		if($_.Exception.Message -Match "The definition of this report is not valid or supported by this version of Reporting Services." -and $IgnoreSQLVersion -and $IgnoreSQLVersion -eq $true){
+			Write-Host $_.Exception.Message;
+			Write-Host "Ignore SQL Version errors is enabled, continuing...";
+		}
+		else {
+			Write-Error $_.Exception.Message;
+			#Terminate script
+			exit -1;
+		}
 	}
 	}
 }
