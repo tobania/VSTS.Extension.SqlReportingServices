@@ -124,8 +124,8 @@ param(
 
     $type = $ssrs.GetType().Namespace;
 
-    #display datatype, just for our reference
-    Verbose-WriteLine "Got Namespace $datatype for SSRS..."; 
+    #display type, just for our reference
+    Verbose-WriteLine "Got Namespace $type for SSRS..."; 
  
 
 ##########################################################
