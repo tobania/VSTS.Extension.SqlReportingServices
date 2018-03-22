@@ -26,8 +26,8 @@
   "demands": [],
   "version": {
     "Major": "1",
-    "Minor": "4",
-    "Patch": "3"
+    "Minor": "5",
+    "Patch": "5"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Deploy SQL Server reporting files",
@@ -228,6 +228,15 @@
       "defaultValue": false,
       "groupName": "advanced",
       "helpMarkDown": "Enable or disable verbose logging"
+    },
+    {
+      "name": "IgnoreSQLVersion",
+      "type": "boolean",
+      "label": "Ignore SQL Version",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Ignore SQL Version mismatch between Server and Reports"
     }
 
   ],
