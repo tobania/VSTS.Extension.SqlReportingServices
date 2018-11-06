@@ -115,7 +115,7 @@ foreach($folder in $dirs.GetEnumerator()){
 	try{
 		$ssrs.CreateFolder($folderName,$folderPath,$props.ToArray());
 	}catch{
-		 if($_.Exception.Message.ToLower().Contains("already exists")){
+		 if($_.Exception.Message.ToLower().Contains("itemalreadyexistsexception")){
 			Verbose-WriteLine "Folder $folderName already exists, Skipping!" 
 		 }else{
 			throw;
